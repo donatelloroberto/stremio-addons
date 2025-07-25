@@ -1,0 +1,67 @@
+version: "3.8"
+services:
+  # used to build base typescript addon image
+  ts-addon:
+    container_name: ts-addon
+    image: stremio-ts-addon
+    build: 
+      context: .
+      dockerfile: ./docker/ts-addon/Dockerfile
+  # used to build base javascript addon image
+  js-addon:
+    container_name: js-addon
+    image: stremio-js-addon
+    build: ./docker/js-addon
+  streaming-server:
+    container_name: streaming-server
+    image: sleeyax/stremio-streaming-server:latest
+    ports: 
+    - "11470:11470"
+  cartoonextra:
+    container_name: cartoonextra
+    depends_on: 
+      - ts-addon
+    build: ./packages/addons/cartoonextra
+    ports: 
+      - "7776:80"
+  dlive:
+    container_name: dlive
+    depends_on: 
+      - js-addon
+    build: ./packages/addons/dlive
+    ports: 
+      - "7778:80"
+  horriblesubs:
+    container_name: horriblesubs
+    depends_on: 
+      - js-addon
+    build: ./packages/addons/horriblesubs
+    ports: 
+      - "7779:80"
+  watchcartoononline:
+    container_name: watchcartoononline
+    depends_on: 
+      - ts-addon
+    build: ./packages/addons/watchcartoononline
+    ports: 
+      - "7780:80"
+  xnxx:
+    container_name: xnxx
+    depends_on: 
+      - ts-addon
+    build: ./packages/addons/xnxx
+    ports: 
+      - "7781:80"
+    env_file: 
+      - ./packages/addons/xnxx/.env
+  searchandplay: 
+    container_name: searchandplay
+    depends_on: 
+      - ts-addon
+      - streaming-server
+    build: ./packages/addons/search-and-play
+    ports: 
+      - "7782:80"
+    environment:
+      - STREAMING_SERVER_URL=http://streaming-server:11470
+      - ADDON_URL=http://127.0.0.1:7782

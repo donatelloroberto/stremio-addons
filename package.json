@@ -1,0 +1,15 @@
+{
+  "name": "root",
+  "private": true,
+  "scripts": {
+    "bootstrap:hoist": "lerna bootstrap --hoist",
+    "bootstrap": "lerna bootstrap",
+    "build": "lerna run tsc"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.24",
+    "lerna": "^4.0.0",
+    "nodemon": "^2.0.15",
+    "typescript": "^4.6.3"
+  }
+}
